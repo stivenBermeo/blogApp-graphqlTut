@@ -7,5 +7,12 @@ export const Query = {
       include: { author: true }
     });
     return posts;
+  },
+
+  userIndex: async (_parent: any, _args: any, { prisma }: Context) => {
+    const users = await prisma.user.findMany({
+      include: { posts: true }
+    });
+    return users;
   }
 }
