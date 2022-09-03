@@ -7,10 +7,13 @@
     "start:dev": "nodemon --watch './**/*.ts' --exec 'ts-node' src/index.ts",
     "start:postgres": "docker run -itd -e POSTGRES_USER=root -e POSTGRES_PASSWORD=root1234 -p 5432:5432 -v /private/var/lib/postgresql/data --name postgresql postgres",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docker:build:db": "docker build -t db ./db",
-    "docker:run:db": "docker run --name psd -e POSTGRES_PASSWORD=fred -p 5432:5432 -d postgres",
-    "docker:pull:pgadmin": "docker pull dpage/pgadmin4:latest",
-    "docker:run:pgadmin": "docker run --name pgadmin-blogApp -p 5051:80 -e 'PGADMIN_DEFAULT_EMAIL=root@gmail.com' -e 'PGADMIN_DEFAULT_PASSWORD=baeldung' -d dpage/pgadmin4"
+    "docker:db:run": "docker run --name psd -e POSTGRES_PASSWORD=fred -p 5432:5432 -d postgres",
+    "prisma:migrations:create": "npx prisma migrate dev --name init",
+    "prisma:migrations:pull": "npx prisma db pull",
+    "postgres:access": "psql blogApp -h localhost -p 5432 -U postgres"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seeds/seed.ts"
   },
   "keywords": [],
   "author": "",
