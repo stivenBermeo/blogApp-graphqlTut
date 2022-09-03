@@ -10,6 +10,7 @@
     "docker:db:run": "docker run --name psd -e POSTGRES_PASSWORD=fred -p 5432:5432 -d postgres",
     "prisma:migrations:create": "npx prisma migrate dev --name init",
     "prisma:migrations:pull": "npx prisma db pull",
+    "prisma:seed:run": "npx prisma db seed",
     "postgres:access": "psql blogApp -h localhost -p 5432 -U postgres"
   },
   "prisma": {
