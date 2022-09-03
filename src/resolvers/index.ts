@@ -1,6 +1,8 @@
 import { Query } from "./Query"
+import { Mutation } from "./Mutation"
 
 
 export {
-  Query
+  Query,
+  Mutation
 }
