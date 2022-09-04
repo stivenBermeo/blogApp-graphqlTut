@@ -1,4 +1,4 @@
-import { Post } from "@prisma/client";
+import { Post, Profile } from "@prisma/client";
 import { Context } from "..";
 
 export const User = {
@@ -8,5 +8,12 @@ export const User = {
     });
 
     return posts;
+  },
+  profile: async({ id }: any, _args: any, { prisma }: Context): Promise<Profile | null> => {
+    const profile = await prisma.profile.findUnique({
+      where: { userId: id }
+    });
+
+    return profile;
   }
 }
