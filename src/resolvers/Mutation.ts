@@ -54,8 +54,8 @@ export const Mutation = {
   postCreate: async (_parent: any, { post }: PostUpsertArgs, { prisma, authorization }: Context): Promise<PostPayloadType> => {
     const { title, content } = post;
 
-    const JWTvalidation = validateJWT(authorization);
-    if (!JWTvalidation) {
+    const JWT = validateJWT(authorization);
+    if (!JWT) {
       return { ...Errors.authorizationInvalidToken, post: null };
     }
 
@@ -74,13 +74,18 @@ export const Mutation = {
         data: {
           title,
           content,
-          authorId: JWTvalidation.userId
+          authorId: JWT.userId
         }
       })
     };
   },
-  postUpdate: async (_parent: any, { id, post }: { id: number, post: PostUpsertArgs['post'] }, { prisma }: Context): Promise<PostPayloadType> => {
+  postUpdate: async (_parent: any, { id, post }: { id: number, post: PostUpsertArgs['post'] }, { prisma, authorization }: Context): Promise<PostPayloadType> => {
     const { title, content } = post;
+
+    const JWT = validateJWT(authorization);
+    if (!JWT) {
+      return { ...Errors.authorizationInvalidToken, post: null };
+    }
 
     if (!title && !content) {
       return {
@@ -91,6 +96,23 @@ export const Mutation = {
       }
     }
     
+    const targetPost = await prisma.post.findUnique({
+      where: { id }
+    });
+
+    if (!targetPost) {
+      return {
+        userErrors: [{
+          message: 'Could not find requested post'
+        }],
+        post: null
+      };
+    }
+
+    if (targetPost.authorId !== JWT.userId) {
+      return { ...Errors.authorizationInvalidToken, post: null };
+    }
+
     return {
       userErrors: [],
       post: prisma.post.update({
