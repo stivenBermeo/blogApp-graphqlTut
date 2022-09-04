@@ -6,6 +6,7 @@ interface UserUpsertArgs {
     name: string
     email: string
     password: string
+    bio: string
   }
 }
 
@@ -29,7 +30,6 @@ interface ProfilePayloadType {
   }[];
   profile: Profile | Prisma.Prisma__ProfileClient<Profile> | null 
 }
-
 
 interface PostUpsertArgs {
   post: {
@@ -108,12 +108,12 @@ export const Mutation = {
   },
 
   userCreate: async (_parent: any, { user }: UserUpsertArgs, { prisma }: Context): Promise<UserPayloadType> => {
-    const { name, email, password } = user;
+    const { name, email, password, bio } = user;
 
-    if (!email || !password) {
+    if (!email || !password || !bio) {
       return {
         userErrors: [{
-          message: 'You must provide EMAIL and PASSWORD in order to create a user'
+          message: 'You must provide EMAIL, BIO and PASSWORD in order to create a user'
         }],
         user: null
       }
@@ -125,31 +125,39 @@ export const Mutation = {
         data: {
           name,
           email,
-          password
+          password,
+          profile: {
+            create: {
+              bio
+            }
+          }
         }
       })
     };
   },
   userUpdate: async (_parent: any, {id, user }: {id: number, user: UserUpsertArgs['user']}, { prisma }: Context): Promise<UserPayloadType> => {
-    const { name, password } = user;
+    const { name, password, bio } = user;
 
-    if (!name && !password) {
+    if (!name && !password && !bio) {
       return {
         userErrors: [{
-          message: 'You must provide Name or PASSWORD in order to update a user'
+          message: 'You must provide NAME, BIO or PASSWORD in order to update a user'
         }],
         user: null
       }
     }
+
+    const updateArg: any = {} ;
+
+    if (name) updateArg.name = name;
+    if (password) updateArg.password = password;
+    if (bio) updateArg.profile = { update: { bio } };
     
     return {
       userErrors: [],
       user: prisma.user.update({
         where: { id },
-        data: {
-          name,
-          password
-        }
+        data: updateArg
       })
     };
   },
@@ -184,64 +192,6 @@ export const Mutation = {
       })
     }).catch( err => {
       return false;
-    });
-
-    return Boolean(response);
-  },
-
-  profileCreate: async (_parent: any, { profile }: ProfileUpsertArgs, { prisma }: Context): Promise<ProfilePayloadType> => {
-    const { userId, bio } = profile;
-
-    if (!userId || !bio) {
-      return {
-        userErrors: [{
-          message: 'You must provide AUTHOR and BIO in order to create a profile'
-        }],
-        profile: null
-      }
-    }
-    
-    return {
-      userErrors: [],
-      profile: prisma.profile.create({
-        data: {
-          userId,
-          bio
-        }
-      })
-    };
-  },
-  profileUpdate: async (_parent: any, {id, profile }: {id: number, profile: ProfileUpsertArgs['profile']}, { prisma }: Context): Promise<ProfilePayloadType> => {
-    const { bio } = profile;
-
-    if (!bio) {
-      return {
-        userErrors: [{
-          message: 'You must provide BIO in order to update a profile'
-        }],
-        profile: null
-      }
-    }
-    
-    return {
-      userErrors: [],
-      profile: prisma.profile.update({
-        where: { id },
-        data: {
-          bio
-        }
-      })
-    };
-  },
-  profileDelete: async(_parent: any, { id }: { id: number }, { prisma }: Context): Promise<Boolean> => {
-    const profile = await prisma.profile.findUnique({
-      where: { id }
-    });
-
-    if (!profile) return false;
-
-    const response = await prisma.profile.delete({
-      where: { id }
     });
 
     return Boolean(response);

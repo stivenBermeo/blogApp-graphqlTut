@@ -14,10 +14,6 @@ export const typeDefs = gql`
     userCreate(user: UserInput): UserPayload!
     userUpdate(id: Int!, user: UserInput): UserPayload!
     userDelete(id: Int!): Boolean!
-    profileCreate(profile: ProfileInput): ProfilePayload!
-    profileUpdate(id: Int!, profile: ProfileInput): ProfilePayload!
-    profileDelete(id: Int!): Boolean!
-
   }
 
   type User {
@@ -61,15 +57,6 @@ export const typeDefs = gql`
     name: String
     email: String
     password: String
-  }
-
-  type ProfilePayload {
-    userErrors: [UserError!]!,
-    profile: Profile
-  }
-
-  input ProfileInput {
-    userId: Int
     bio: String
   }
 
