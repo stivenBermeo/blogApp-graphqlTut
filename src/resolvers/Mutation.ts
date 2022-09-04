@@ -65,7 +65,7 @@ export const Mutation = {
         data: {
           title,
           content,
-          authorId: 1
+          authorId: 2
         }
       })
     };
@@ -153,7 +153,41 @@ export const Mutation = {
       })
     };
   },
+  userDelete: async(_parent: any, { id }: { id: number }, { prisma }: Context): Promise<Boolean> => {
+    const user = await prisma.user.findUnique({
+      where: { id }
+    });
 
+    if (!user) return false;
+
+    const response =  await prisma.$transaction(async (prisma) => {
+      const hasPosts = await prisma.post.findMany({
+        where: { authorId: id }
+      });
+      if (hasPosts) {
+        await prisma.post.deleteMany({
+          where: { authorId: id }
+        })
+      }
+  
+      const hasProfile = await prisma.profile.findUnique({
+        where: { userId: id }
+      });
+      if (hasProfile) {
+        await prisma.profile.delete({
+          where: { userId: id }
+        })
+      }
+
+      return prisma.user.delete({
+        where: { id }
+      })
+    }).catch( err => {
+      return false;
+    });
+
+    return Boolean(response);
+  },
 
   profileCreate: async (_parent: any, { profile }: ProfileUpsertArgs, { prisma }: Context): Promise<ProfilePayloadType> => {
     const { userId, bio } = profile;

@@ -13,6 +13,7 @@ export const typeDefs = gql`
     postDelete(id: Int!): Boolean!
     userCreate(user: UserInput): UserPayload!
     userUpdate(id: Int!, user: UserInput): UserPayload!
+    userDelete(id: Int!): Boolean!
     profileCreate(profile: ProfileInput): ProfilePayload!
     profileUpdate(id: Int!, profile: ProfileInput): ProfilePayload!
     profileDelete(id: Int!): Boolean!
