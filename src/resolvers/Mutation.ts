@@ -104,5 +104,28 @@ export const Mutation = {
       })
     };
   },
+  userUpdate: async (_parent: any, {id, user }: {id: number, user: userUpsertArgs['user']}, { prisma }: Context): Promise<UserPayloadType> => {
+    const { name, password } = user;
+
+    if (!name && !password) {
+      return {
+        userErrors: [{
+          message: 'You must provide Name or PASSWORD in order to update a user'
+        }],
+        user: null
+      }
+    }
+    
+    return {
+      userErrors: [],
+      user: prisma.user.update({
+        where: { id },
+        data: {
+          name,
+          password
+        }
+      })
+    };
+  },
 
 }

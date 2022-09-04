@@ -11,6 +11,7 @@ export const typeDefs = gql`
     postCreate(post: PostInput!): PostPayload!
     postUpdate(id: Int!, post: PostInput!): PostPayload!
     userCreate(user: UserInput): UserPayload!
+    userUpdate(id: Int!, user: UserInput): UserPayload!
   }
 
   type User {
