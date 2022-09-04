@@ -70,7 +70,6 @@ export const Mutation = {
       })
     };
   },
-
   postUpdate: async (_parent: any, { id, post }: { id: number, post: PostUpsertArgs['post'] }, { prisma }: Context): Promise<PostPayloadType> => {
     const { title, content } = post;
 
@@ -199,6 +198,19 @@ export const Mutation = {
         }
       })
     };
+  },
+  profileDelete: async(_parent: any, { id }: { id: number }, { prisma }: Context): Promise<Boolean> => {
+    const profile = await prisma.profile.findUnique({
+      where: { id }
+    });
+
+    if (!profile) return false;
+
+    const response = await prisma.profile.delete({
+      where: { id }
+    });
+
+    return Boolean(response);
   },
 
 }
