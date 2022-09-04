@@ -1,27 +1,17 @@
 import { PrismaClient } from '@prisma/client'
+
+const mockUsers = require('./mockData/users.json');
+const mockPosts = require('./mockData/posts.json');
+const mockProfiles = require('./mockData/profiles.json');
+
 const prisma = new PrismaClient()
 
 async function main() {
-  const alice = await prisma.user.upsert({
-    where: { email: 'alice@prisma.io' },
-    update: {},
-    create: {
-      email: 'alice@prisma.io',
-      password: 'not1234',
-      name: 'Alice'
-    },
-  })
+  
+  await prisma.user.createMany({ data: mockUsers })
+  await prisma.post.createMany({ data: mockPosts })
+  await prisma.profile.createMany({ data: mockProfiles })
 
-  const bob = await prisma.user.upsert({
-    where: { email: 'bob@prisma.io' },
-    update: {},
-    create: {
-      email: 'bob@prisma.io',
-      password: 'pass',
-      name: 'Bob'
-    },
-  })
-  console.log({ alice, bob })
 }
 
 main()
