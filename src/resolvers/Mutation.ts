@@ -243,12 +243,17 @@ export const Mutation = {
     };
 
   },
-  userDelete: async(_parent: any, { id }: { id: number }, { prisma }: Context): Promise<Boolean> => {
+  userDelete: async(_parent: any, { id }: { id: number }, { prisma, authorization }: Context): Promise<Boolean> => {
+    // TODO: Change boolean response for actual errors thing
+
+    const JWT = validateJWT(authorization);
+    if (!JWT) return false;
+
     const user = await prisma.user.findUnique({
       where: { id }
     });
 
-    if (!user) return false;
+    if (!user || user.id !== JWT.userId) return false;
 
     const response =  await prisma.$transaction(async (prisma) => {
       const hasPosts = await prisma.post.findMany({
