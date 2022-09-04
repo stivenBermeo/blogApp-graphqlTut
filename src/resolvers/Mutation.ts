@@ -1,7 +1,9 @@
 import { Post, Prisma, Profile, User } from "@prisma/client";
 import { Context } from "../index";
 import Bcrypt from 'bcrypt';
-import { BCRYPT_SALT } from "../../utils/keys";
+import { BCRYPT_SALT, JWT_SIGNATURE } from "../../utils/keys";
+import JWT from 'jsonwebtoken';
+import { Errors } from "../../utils/constants";
 
 interface UserUpsertArgs {
   user: {
@@ -19,18 +21,17 @@ interface UserPayloadType {
   user: User | Prisma.Prisma__UserClient<User> | null 
 }
 
-interface ProfileUpsertArgs {
-  profile: {
-    userId: number
-    bio: string
+interface CredentialsArgs {
+  user: {
+    email: string;
+    password: string;
   }
 }
-
-interface ProfilePayloadType {
+interface CredentialsPayloadType {
   userErrors: {
     message: string
   }[];
-  profile: Profile | Prisma.Prisma__ProfileClient<Profile> | null 
+  token: string | null
 }
 
 interface PostUpsertArgs {
@@ -109,7 +110,7 @@ export const Mutation = {
     return Boolean(response);
   },
 
-  userCreate: async (_parent: any, { user }: UserUpsertArgs, { prisma }: Context): Promise<UserPayloadType> => {
+  userCreate: async (_parent: any, { user }: UserUpsertArgs, { prisma }: Context): Promise<CredentialsPayloadType> => {
     const { name, email, password, bio } = user;
 
     if (!email || !password || !bio) {
@@ -117,26 +118,30 @@ export const Mutation = {
         userErrors: [{
           message: 'You must provide EMAIL, BIO and PASSWORD in order to create a user'
         }],
-        user: null
+        token: null
       }
     }
     
     const hashedPassword = await Bcrypt.hash(password, BCRYPT_SALT);
 
-    return {
-      userErrors: [],
-      user: prisma.user.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword,
-          profile: {
-            create: {
-              bio
-            }
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        profile: {
+          create: {
+            bio
           }
         }
-      })
+      }
+    });
+
+    const token = JWT.sign({ userId: newUser.id }, JWT_SIGNATURE);
+
+    return {
+      userErrors: [],
+      token 
     };
   },
   userUpdate: async (_parent: any, {id, user }: {id: number, user: UserUpsertArgs['user']}, { prisma }: Context): Promise<UserPayloadType> => {
@@ -164,6 +169,29 @@ export const Mutation = {
         data: updateArg
       })
     };
+  },
+  userSignIn: async (_parent: any, { user }: CredentialsArgs, { prisma }: Context): Promise<CredentialsPayloadType> => {
+    const { email, password } = user;
+
+    if (!email) return Errors.credentialsInvalidInput;
+
+    const userData = await prisma.user.findUnique({
+      where: { email }
+    });
+
+    if (!userData) return Errors.credentialsInvalidInput;
+
+    const isMatch = await Bcrypt.compare(password, userData.password);
+
+    if (!isMatch) return Errors.credentialsInvalidInput;
+
+    const token = JWT.sign({ userId: userData.id }, JWT_SIGNATURE);
+
+    return {
+      userErrors: [],
+      token 
+    };
+
   },
   userDelete: async(_parent: any, { id }: { id: number }, { prisma }: Context): Promise<Boolean> => {
     const user = await prisma.user.findUnique({
