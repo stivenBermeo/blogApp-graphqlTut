@@ -1,7 +1,7 @@
-import { Post, Prisma, User } from "@prisma/client";
+import { Post, Prisma, Profile, User } from "@prisma/client";
 import { Context } from "../index";
 
-interface userUpsertArgs {
+interface UserUpsertArgs {
   user: {
     name: string
     email: string
@@ -15,6 +15,21 @@ interface UserPayloadType {
   }[];
   user: User | Prisma.Prisma__UserClient<User> | null 
 }
+
+interface ProfileUpsertArgs {
+  profile: {
+    userId: number
+    bio: string
+  }
+}
+
+interface ProfilePayloadType {
+  userErrors: {
+    message: string
+  }[];
+  profile: Profile | Prisma.Prisma__ProfileClient<Profile> | null 
+}
+
 
 interface PostUpsertArgs {
   post: {
@@ -81,7 +96,7 @@ export const Mutation = {
   },
 
 
-  userCreate: async (_parent: any, { user }: userUpsertArgs, { prisma }: Context): Promise<UserPayloadType> => {
+  userCreate: async (_parent: any, { user }: UserUpsertArgs, { prisma }: Context): Promise<UserPayloadType> => {
     const { name, email, password } = user;
 
     if (!email || !password) {
@@ -104,7 +119,7 @@ export const Mutation = {
       })
     };
   },
-  userUpdate: async (_parent: any, {id, user }: {id: number, user: userUpsertArgs['user']}, { prisma }: Context): Promise<UserPayloadType> => {
+  userUpdate: async (_parent: any, {id, user }: {id: number, user: UserUpsertArgs['user']}, { prisma }: Context): Promise<UserPayloadType> => {
     const { name, password } = user;
 
     if (!name && !password) {
@@ -123,6 +138,30 @@ export const Mutation = {
         data: {
           name,
           password
+        }
+      })
+    };
+  },
+
+
+  profileCreate: async (_parent: any, { profile }: ProfileUpsertArgs, { prisma }: Context): Promise<ProfilePayloadType> => {
+    const { userId, bio } = profile;
+
+    if (!userId || !bio) {
+      return {
+        userErrors: [{
+          message: 'You must provide AUTHOR and BIO in order to create a profile'
+        }],
+        profile: null
+      }
+    }
+    
+    return {
+      userErrors: [],
+      profile: prisma.profile.create({
+        data: {
+          userId,
+          bio
         }
       })
     };
