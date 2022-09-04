@@ -10,6 +10,7 @@ export const typeDefs = gql`
   type Mutation {
     postCreate(post: PostInput!): PostPayload!
     postUpdate(id: Int!, post: PostInput!): PostPayload!
+    postDelete(id: Int!): Boolean!
     userCreate(user: UserInput): UserPayload!
     userUpdate(id: Int!, user: UserInput): UserPayload!
     profileCreate(profile: ProfileInput): ProfilePayload!

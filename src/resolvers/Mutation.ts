@@ -94,7 +94,19 @@ export const Mutation = {
       })
     };
   },
+  postDelete: async(_parent: any, { id }: { id: number }, { prisma }: Context): Promise<Boolean> => {
+    const post = await prisma.post.findUnique({
+      where: { id }
+    });
 
+    if (!post) return false;
+
+    const response = await prisma.post.delete({
+      where: { id }
+    });
+
+    return Boolean(response);
+  },
 
   userCreate: async (_parent: any, { user }: UserUpsertArgs, { prisma }: Context): Promise<UserPayloadType> => {
     const { name, email, password } = user;
