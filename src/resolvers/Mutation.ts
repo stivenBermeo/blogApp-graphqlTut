@@ -1,5 +1,7 @@
 import { Post, Prisma, Profile, User } from "@prisma/client";
 import { Context } from "../index";
+import Bcrypt from 'bcrypt';
+import { BCRYPT_SALT } from "../../utils/keys";
 
 interface UserUpsertArgs {
   user: {
@@ -119,13 +121,15 @@ export const Mutation = {
       }
     }
     
+    const hashedPassword = await Bcrypt.hash(password, BCRYPT_SALT);
+
     return {
       userErrors: [],
       user: prisma.user.create({
         data: {
           name,
           email,
-          password,
+          password: hashedPassword,
           profile: {
             create: {
               bio
@@ -150,7 +154,7 @@ export const Mutation = {
     const updateArg: any = {} ;
 
     if (name) updateArg.name = name;
-    if (password) updateArg.password = password;
+    if (password) updateArg.password = await Bcrypt.hash(password, BCRYPT_SALT);
     if (bio) updateArg.profile = { update: { bio } };
     
     return {
