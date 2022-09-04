@@ -1,9 +1,10 @@
-import { Post, Prisma, Profile, User } from "@prisma/client";
+import { Post, Prisma, User } from "@prisma/client";
 import { Context } from "../index";
 import Bcrypt from 'bcrypt';
 import { BCRYPT_SALT, JWT_SIGNATURE } from "../../utils/keys";
 import JWT from 'jsonwebtoken';
 import { Errors } from "../../utils/constants";
+import { validateJWT } from "../../utils/validateJWT";
 
 interface UserUpsertArgs {
   user: {
@@ -50,8 +51,13 @@ interface PostPayloadType {
 
 export const Mutation = {
 
-  postCreate: async (_parent: any, { post }: PostUpsertArgs, { prisma }: Context): Promise<PostPayloadType> => {
+  postCreate: async (_parent: any, { post }: PostUpsertArgs, { prisma, authorization }: Context): Promise<PostPayloadType> => {
     const { title, content } = post;
+
+    const JWTvalidation = validateJWT(authorization);
+    if (!JWTvalidation) {
+      return { ...Errors.authorizationInvalidToken, post: null };
+    }
 
     if (!title || !content) {
       return {
@@ -68,7 +74,7 @@ export const Mutation = {
         data: {
           title,
           content,
-          authorId: 2
+          authorId: JWTvalidation.userId
         }
       })
     };
@@ -137,7 +143,7 @@ export const Mutation = {
       }
     });
 
-    const token = JWT.sign({ userId: newUser.id }, JWT_SIGNATURE);
+    const token = JWT.sign({ userId: newUser.id }, JWT_SIGNATURE, { expiresIn: 3600000 });
 
     return {
       userErrors: [],
@@ -185,7 +191,7 @@ export const Mutation = {
 
     if (!isMatch) return Errors.credentialsInvalidInput;
 
-    const token = JWT.sign({ userId: userData.id }, JWT_SIGNATURE);
+    const token = JWT.sign({ userId: userData.id }, JWT_SIGNATURE, { expiresIn: 3600000 });
 
     return {
       userErrors: [],

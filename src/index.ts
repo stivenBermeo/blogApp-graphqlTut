@@ -7,17 +7,16 @@ const prisma = new PrismaClient();
 
 export interface Context {
   prisma: PrismaClient<Prisma.PrismaClientOptions, never, Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined>
-
-}
-
-const context = {
-  prisma
+  authorization: string | null
 }
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context
+  context: ({ req }: any) => {
+    const { headers } = req;
+    return { prisma, authorization: headers.authorization }
+  }
 });
 
 server.listen().then(({ url}) => {
