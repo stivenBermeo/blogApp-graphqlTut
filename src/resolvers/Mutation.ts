@@ -177,8 +177,13 @@ export const Mutation = {
       token 
     };
   },
-  userUpdate: async (_parent: any, {id, user }: {id: number, user: UserUpsertArgs['user']}, { prisma }: Context): Promise<UserPayloadType> => {
+  userUpdate: async (_parent: any, {id, user }: {id: number, user: UserUpsertArgs['user']}, { prisma, authorization }: Context): Promise<UserPayloadType> => {
     const { name, password, bio } = user;
+
+    const JWT = validateJWT(authorization);
+    if (!JWT) {
+      return { ...Errors.authorizationInvalidToken, user: null };
+    }
 
     if (!name && !password && !bio) {
       return {
@@ -189,6 +194,18 @@ export const Mutation = {
       }
     }
 
+    const targetUser = await prisma.user.findUnique({
+      where: { id }
+    });
+
+    if (!targetUser) {
+      return { ...Errors.resourceNotFound, user: null }
+    }
+
+    if (JWT.userId !== targetUser.id) {
+      return { ...Errors.authorizationInvalidToken, user: null };
+    }
+    
     const updateArg: any = {} ;
 
     if (name) updateArg.name = name;

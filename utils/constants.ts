@@ -10,5 +10,11 @@ export const Errors = {
     userErrors: [{
       message: 'User not authorized for request'
     }]
+  },
+
+  resourceNotFound: {
+    userErrors: [{
+      message: 'Resource not found'
+    }]
   }
 }
