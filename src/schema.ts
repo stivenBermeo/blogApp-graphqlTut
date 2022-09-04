@@ -13,6 +13,7 @@ export const typeDefs = gql`
     userCreate(user: UserInput): UserPayload!
     userUpdate(id: Int!, user: UserInput): UserPayload!
     profileCreate(profile: ProfileInput): ProfilePayload!
+    profileUpdate(id: Int!, profile: ProfileInput): ProfilePayload!
   }
 
   type User {

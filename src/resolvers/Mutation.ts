@@ -166,5 +166,27 @@ export const Mutation = {
       })
     };
   },
+  profileUpdate: async (_parent: any, {id, profile }: {id: number, profile: ProfileUpsertArgs['profile']}, { prisma }: Context): Promise<ProfilePayloadType> => {
+    const { bio } = profile;
+
+    if (!bio) {
+      return {
+        userErrors: [{
+          message: 'You must provide BIO in order to update a profile'
+        }],
+        profile: null
+      }
+    }
+    
+    return {
+      userErrors: [],
+      profile: prisma.profile.update({
+        where: { id },
+        data: {
+          bio
+        }
+      })
+    };
+  },
 
 }
