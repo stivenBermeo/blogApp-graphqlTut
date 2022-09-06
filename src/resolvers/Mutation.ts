@@ -5,6 +5,7 @@ import { BCRYPT_SALT, JWT_SIGNATURE } from "../../utils/keys";
 import JWT from 'jsonwebtoken';
 import { Errors } from "../../utils/constants";
 import { validateJWT } from "../../utils/validateJWT";
+import Validator from 'validator';
 
 interface UserUpsertArgs {
   user: {
@@ -145,6 +146,7 @@ export const Mutation = {
 
   userCreate: async (_parent: any, { user }: UserUpsertArgs, { prisma }: Context): Promise<CredentialsPayloadType> => {
     const { name, email, password, bio } = user;
+    const userErrors = [];
 
     if (!email || !password || !bio) {
       return {
@@ -155,6 +157,26 @@ export const Mutation = {
       }
     }
     
+    if (!Validator.isEmail(email)) {
+      userErrors.push({ message: 'Invalid EMAIL' });
+    }
+
+    if (!Validator.isLength(bio, { min: 10, max: 500})) {
+      userErrors.push({ message: 'Bio must be 10-500 characters long' });
+    }
+
+    if (!Validator.isLength(password, { min: 6, max: 20})) {
+      userErrors.push({ message: 'Password must be 6-20 characters long' });
+    }
+
+    if (!Validator.isLength(name, { min: 3, max: 30})) {
+      userErrors.push({ message: 'Name must be 3-30 characters long' });
+    }
+
+    if (userErrors.length) {
+      return { userErrors, token: null }
+    }
+
     const hashedPassword = await Bcrypt.hash(password, BCRYPT_SALT);
 
     const newUser = await prisma.user.create({
