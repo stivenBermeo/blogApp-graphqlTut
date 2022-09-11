@@ -5,7 +5,7 @@ import { BCRYPT_SALT, JWT_SIGNATURE } from "../../utils/keys";
 import JWT from 'jsonwebtoken';
 import { Errors } from "../../utils/constants";
 import { validateJWT } from "../../utils/validateJWT";
-import Validator from 'validator';
+import { UserValidation } from '../../utils/userValidation';
 
 interface UserUpsertArgs {
   user: {
@@ -146,35 +146,12 @@ export const Mutation = {
 
   userCreate: async (_parent: any, { user }: UserUpsertArgs, { prisma }: Context): Promise<CredentialsPayloadType> => {
     const { name, email, password, bio } = user;
-    const userErrors = [];
 
-    if (!email || !password || !bio) {
-      return {
-        userErrors: [{
-          message: 'You must provide EMAIL, BIO and PASSWORD in order to create a user'
-        }],
-        token: null
-      }
-    }
-    
-    if (!Validator.isEmail(email)) {
-      userErrors.push({ message: 'Invalid EMAIL' });
-    }
-
-    if (!Validator.isLength(bio, { min: 10, max: 500})) {
-      userErrors.push({ message: 'Bio must be 10-500 characters long' });
-    }
-
-    if (!Validator.isLength(password, { min: 6, max: 20})) {
-      userErrors.push({ message: 'Password must be 6-20 characters long' });
-    }
-
-    if (!Validator.isLength(name, { min: 3, max: 30})) {
-      userErrors.push({ message: 'Name must be 3-30 characters long' });
-    }
-
-    if (userErrors.length) {
-      return { userErrors, token: null }
+    try {
+      const userValidation = new UserValidation({ name, email, password, bio }, 'token');
+      userValidation.create();
+    } catch (err: any) {
+      return err;
     }
 
     const hashedPassword = await Bcrypt.hash(password, BCRYPT_SALT);
@@ -207,13 +184,11 @@ export const Mutation = {
       return { ...Errors.authorizationInvalidToken, user: null };
     }
 
-    if (!name && !password && !bio) {
-      return {
-        userErrors: [{
-          message: 'You must provide NAME, BIO or PASSWORD in order to update a user'
-        }],
-        user: null
-      }
+    try {
+      const userValidation = new UserValidation({ name, password, bio }, 'user');
+      userValidation.create();
+    } catch (err: any) {
+      return err;
     }
 
     const targetUser = await prisma.user.findUnique({
