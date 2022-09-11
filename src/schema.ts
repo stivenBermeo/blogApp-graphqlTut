@@ -69,5 +69,6 @@ export const typeDefs = gql`
   input PostInput {
     title: String
     content: String
+    published: Boolean
   }
 `;

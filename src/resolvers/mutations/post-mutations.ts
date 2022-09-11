@@ -5,8 +5,9 @@ import { validateJWT } from "../../../utils/validateJWT";
 
 interface PostUpsertArgs {
   post: {
-    title: string
-    content: string
+    title?: string
+    content?: string
+    published?: boolean
   }
 }
 
@@ -48,17 +49,17 @@ export const postMutations = {
     };
   },
   postUpdate: async (_parent: any, { id, post }: { id: number, post: PostUpsertArgs['post'] }, { prisma, authorization }: Context): Promise<PostPayloadType> => {
-    const { title, content } = post;
+    const { title, content, published } = post;
 
     const JWT = validateJWT(authorization);
     if (!JWT) {
       return { ...Errors.authorizationInvalidToken, post: null };
     }
 
-    if (!title && !content) {
+    if (!title && !content && !published) {
       return {
         userErrors: [{
-          message: 'You must provide TITLE or CONTENT in order to update a post'
+          message: 'You must provide Published status ,TITLE or CONTENT in order to update a post'
         }],
         post: null
       }
@@ -81,14 +82,17 @@ export const postMutations = {
       return { ...Errors.authorizationInvalidToken, post: null };
     }
 
+    const updateData : PostUpsertArgs['post'] = {};
+
+    if (title) updateData.title = title
+    if (content) updateData.content = content
+    if (published || typeof published === 'boolean') updateData.published = published
+
     return {
       userErrors: [],
       post: prisma.post.update({
         where: { id },
-        data: {
-          title,
-          content
-        }
+        data: updateData
       })
     };
   },
