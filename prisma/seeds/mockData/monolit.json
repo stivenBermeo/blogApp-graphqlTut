@@ -1,0 +1,312 @@
+[
+  {
+    "name": "karl",
+    "email": "karl@messenger.com",
+    "password": "notKarl",
+    "profile": {
+      "create": {
+        "bio": "I'm karl !!!"
+      }
+    },
+    "posts": {
+      "create": [
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        }
+      ]
+    }
+  },
+  {
+    "name": "Louis",
+    "email": "Louis@messenger.com",
+    "password": "notLouis",
+    "profile": {
+      "create": {
+        "bio": "I'm Louis !!!"
+      }
+    },
+    "posts": {
+      "create": [
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        }
+      ]
+    }
+  },
+  {
+    "name": "mark",
+    "email": "mark@messenger.com",
+    "password": "notmark",
+    "profile": {
+      "create": {
+        "bio": "I'm mark !!!"
+      }
+    },
+    "posts": {
+      "create": [
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        }
+      ]
+    }
+  },
+  {
+    "name": "karen",
+    "email": "karen@messenger.com",
+    "password": "notkaren",
+    "profile": {
+      "create": {
+        "bio": "I'm karen !!!"
+      }
+    },
+    "posts": {
+      "create": [
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        }
+      ]
+    }
+  },
+  {
+    "name": "anne",
+    "email": "anne@messenger.com",
+    "password": "notanne",
+    "profile": {
+      "create": {
+        "bio": "I'm anne !!!"
+      }
+    },
+    "posts": {
+      "create": [
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        },
+        {
+          "title": "my life with mark",
+          "content": "mark mark mark"
+        },
+        {
+          "title": "my life with kevin",
+          "content": "kevin kevin kevin"
+        },
+        {
+          "title": "my life with marie",
+          "content": "marie marie marie"
+        }
+      ]
+    }
+  }
+]
